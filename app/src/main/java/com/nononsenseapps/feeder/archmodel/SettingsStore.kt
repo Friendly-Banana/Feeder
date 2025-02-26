@@ -138,6 +138,7 @@ class SettingsStore(
                 saved = sp.getBoolean(PREFS_FILTER_SAVED, false),
                 recentlyRead = sp.getBoolean(PREFS_FILTER_RECENTLY_READ, true),
                 read = sp.getBoolean(PREFS_FILTER_READ, true),
+                unread = sp.getBoolean(PREFS_FILTER_UNREAD, true),
             ),
         )
     val feedListFilter: StateFlow<FeedListFilter> = _feedListFilter.asStateFlow()
@@ -155,6 +156,11 @@ class SettingsStore(
     fun setFeedListFilterRead(value: Boolean) {
         _feedListFilter.update { it.copy(read = value) }
         sp.edit().putBoolean(PREFS_FILTER_READ, value).apply()
+    }
+
+    fun setFeedListFilterUnread(value: Boolean) {
+        _feedListFilter.update { it.copy(unread = value) }
+        sp.edit().putBoolean(PREFS_FILTER_UNREAD, value).apply()
     }
 
     private val _currentTheme =
@@ -560,6 +566,7 @@ const val PREF_MAX_LINES = "pref_max_lines"
 const val PREFS_FILTER_SAVED = "prefs_filter_saved"
 const val PREFS_FILTER_RECENTLY_READ = "prefs_filter_recently_read"
 const val PREFS_FILTER_READ = "prefs_filter_read"
+const val PREFS_FILTER_UNREAD = "prefs_filter_unread"
 
 const val PREF_LIST_SHOW_ONLY_TITLES = "prefs_list_show_only_titles"
 
@@ -780,6 +787,6 @@ data class PrefsFeedListFilter(
     override val saved: Boolean,
     override val recentlyRead: Boolean,
     override val read: Boolean,
+    override val unread: Boolean,
 ) : FeedListFilter {
-    override val unread: Boolean = true
 }

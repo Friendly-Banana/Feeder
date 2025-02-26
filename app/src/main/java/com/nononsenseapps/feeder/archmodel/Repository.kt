@@ -172,6 +172,10 @@ class Repository(
         }
     }
 
+    fun setFeedListFilterUnread(value: Boolean) {
+        settingsStore.setFeedListFilterUnread(value)
+    }
+
     val currentArticleId: StateFlow<Long> = settingsStore.currentArticleId
 
     fun setCurrentArticle(articleId: Long) = settingsStore.setCurrentArticle(articleId)
