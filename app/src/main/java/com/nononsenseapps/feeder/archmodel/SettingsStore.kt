@@ -139,6 +139,7 @@ class SettingsStore(
                 recentlyRead = sp.getBoolean(PREFS_FILTER_RECENTLY_READ, true),
                 read = sp.getBoolean(PREFS_FILTER_READ, true),
                 unread = sp.getBoolean(PREFS_FILTER_UNREAD, true),
+                search = "",
             ),
         )
     val feedListFilter: StateFlow<FeedListFilter> = _feedListFilter.asStateFlow()
@@ -161,6 +162,10 @@ class SettingsStore(
     fun setFeedListFilterUnread(value: Boolean) {
         _feedListFilter.update { it.copy(unread = value) }
         sp.edit().putBoolean(PREFS_FILTER_UNREAD, value).apply()
+    }
+
+    fun searchFor(value: String) {
+        _feedListFilter.update { it.copy(search = value) }
     }
 
     private val _currentTheme =
@@ -268,10 +273,10 @@ class SettingsStore(
     private val _useDynamicTheme =
         MutableStateFlow(
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-                sp.getBoolean(
-                    PREF_DYNAMIC_THEME,
-                    true,
-                ),
+                    sp.getBoolean(
+                        PREF_DYNAMIC_THEME,
+                        true,
+                    ),
         )
     val useDynamicTheme = _useDynamicTheme.asStateFlow()
 
@@ -735,7 +740,7 @@ fun itemOpenerFromString(value: String) =
         PREF_VAL_OPEN_WITH_BROWSER -> ItemOpener.DEFAULT_BROWSER
         PREF_VAL_OPEN_WITH_WEBVIEW,
         PREF_VAL_OPEN_WITH_CUSTOM_TAB,
-        -> ItemOpener.CUSTOM_TAB
+            -> ItemOpener.CUSTOM_TAB
 
         else -> ItemOpener.READER
     }
@@ -788,5 +793,6 @@ data class PrefsFeedListFilter(
     override val recentlyRead: Boolean,
     override val read: Boolean,
     override val unread: Boolean,
+    override val search: String
 ) : FeedListFilter {
 }

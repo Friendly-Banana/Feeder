@@ -1,6 +1,10 @@
 package com.nononsenseapps.feeder.ui.compose.feedarticle
 
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -397,6 +401,10 @@ class FeedViewModel(
         repository.setFeedListFilterUnread(value)
     }
 
+    override fun searchFor(value: String) {
+        repository.searchFor(value)
+    }
+
     companion object {
         private const val LOG_TAG = "FEEDER_FeedVM"
     }
@@ -430,6 +438,8 @@ data class FeedState(
     override val showFilterMenu: Boolean = false,
     override val filter: FeedListFilter = emptyFeedListFilter,
     val isArticleOpen: Boolean = false,
+    //override val textFieldState: TextFieldState = TextFieldState.Saver,
+    override val searching: Boolean = false,
     override val showTitleUnreadCount: Boolean = false,
     override val isOpenDrawerOnFab: Boolean = false,
 ) : FeedScreenViewState
@@ -459,6 +469,7 @@ interface FeedScreenViewState {
     val showReadingTime: Boolean
     val filter: FeedListFilter
     val showFilterMenu: Boolean
+    val searching: Boolean
     val showTitleUnreadCount: Boolean
     val isOpenDrawerOnFab: Boolean
 }
@@ -469,6 +480,7 @@ interface FeedListFilter {
     val saved: Boolean
     val recentlyRead: Boolean
     val read: Boolean
+    val search: String
 }
 
 val emptyFeedListFilter =
@@ -477,6 +489,7 @@ val emptyFeedListFilter =
         override val saved: Boolean = false
         override val recentlyRead: Boolean = false
         override val read: Boolean = false
+        override val search: String = ""
     }
 
 @Immutable
@@ -488,6 +501,8 @@ interface FeedListFilterCallback {
     fun setRead(value: Boolean)
 
     fun setUnread(value: Boolean)
+
+    fun searchFor(value: String)
 }
 
 val FeedListFilter.onlyUnread: Boolean
